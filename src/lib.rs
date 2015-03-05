@@ -19,6 +19,7 @@ use std::env;
 use std::io::{self, Error, ErrorKind};
 use std::fs;
 use std::path::{self, PathBuf, Path};
+use std::ffi::{OsStr, OsString};
 use rand::{thread_rng, Rng};
 
 /// A wrapper for a path to temporary directory implementing automatic
@@ -42,7 +43,7 @@ impl TempDir {
     /// deleted once the returned wrapper is destroyed.
     ///
     /// If no directory can be created, `Err` is returned.
-    pub fn new_in<P: AsRef<Path>>(tmpdir: P, prefix: &str)
+    pub fn new_in<P: AsRef<Path>, N: AsRef<OsStr>>(tmpdir: P, prefix: N)
                                   -> io::Result<TempDir> {
         let storage;
         let mut tmpdir = tmpdir.as_ref();
@@ -56,13 +57,18 @@ impl TempDir {
         let mut rng = thread_rng();
         for _ in 0..NUM_RETRIES {
             let suffix: String = rng.gen_ascii_chars().take(NUM_RAND_CHARS).collect();
-            let leaf = if prefix.len() > 0 {
-                format!("{}.{}", prefix, suffix)
+            let pv = prefix.as_ref();
+            let leaf = if pv != OsStr::new("") {
+                let mut s = OsString::new();
+                s.push(pv);
+                s.push(".");
+                s.push(suffix);
+                s
             } else {
                 // If we're given an empty string for a prefix, then creating a
                 // directory starting with "." would lead to it being
                 // semi-invisible on some systems.
-                suffix
+                OsString::from(suffix)
             };
             let path = tmpdir.join(&leaf);
             match fs::create_dir(&path) {
