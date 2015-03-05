@@ -43,7 +43,6 @@ impl TempDir {
     /// deleted once the returned wrapper is destroyed.
     ///
     /// If no directory can be created, `Err` is returned.
-    #[allow(deprecated)] // rand usage
     pub fn new_in<P: AsPath + ?Sized>(tmpdir: &P, prefix: &str)
                                       -> io::Result<TempDir> {
         let storage;
@@ -84,7 +83,6 @@ impl TempDir {
     /// deleted once the returned wrapper is destroyed.
     ///
     /// If no directory can be created, `Err` is returned.
-    #[allow(deprecated)]
     pub fn new(prefix: &str) -> io::Result<TempDir> {
         TempDir::new_in(&env::temp_dir(), prefix)
     }
