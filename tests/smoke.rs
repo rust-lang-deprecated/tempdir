@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#![feature(fs, path, io)]
+#![feature(path_ext)]
 
 extern crate tempdir;
 
