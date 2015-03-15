@@ -129,7 +129,7 @@ fn recursive_mkdir_rel() {
     let cwd = env::current_dir().unwrap();
     println!("recursive_mkdir_rel: Making: {} in cwd {} [{}]", path.display(),
            cwd.display(), path.exists());
-    t!(fs::create_dir_all(&path));
+    t!(fs::create_dir(&path));
     assert!(path.is_dir());
     t!(fs::create_dir_all(&path));
     assert!(path.is_dir());
@@ -153,6 +153,7 @@ fn recursive_mkdir_rel_2() {
     let path2 = Path::new("quux/blat");
     println!("recursive_mkdir_rel_2: Making: {} in cwd {}", path2.display(),
              cwd.display());
+    t!(fs::create_dir("quux"));
     t!(fs::create_dir_all(&path2));
     assert!(path2.is_dir());
     assert!(path2.parent().unwrap().is_dir());
