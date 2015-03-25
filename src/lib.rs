@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#![feature(std_misc, io)]
+#![feature(convert, io)]
 #![doc(html_logo_url = "http://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
        html_favicon_url = "http://www.rust-lang.org/favicon.ico",
        html_root_url = "http://doc.rust-lang.org/tempdir/")]
@@ -19,7 +19,7 @@ extern crate rand;
 use std::env;
 use std::io::{self, Error, ErrorKind};
 use std::fs;
-use std::path::{self, PathBuf, AsPath};
+use std::path::{self, PathBuf, Path};
 use rand::{thread_rng, Rng};
 
 /// A wrapper for a path to temporary directory implementing automatic
@@ -43,10 +43,10 @@ impl TempDir {
     /// deleted once the returned wrapper is destroyed.
     ///
     /// If no directory can be created, `Err` is returned.
-    pub fn new_in<P: AsPath + ?Sized>(tmpdir: &P, prefix: &str)
-                                      -> io::Result<TempDir> {
+    pub fn new_in<P: AsRef<Path>>(tmpdir: P, prefix: &str)
+                                  -> io::Result<TempDir> {
         let storage;
-        let mut tmpdir = tmpdir.as_path();
+        let mut tmpdir = tmpdir.as_ref();
         if !tmpdir.is_absolute() {
             let cur_dir = try!(env::current_dir());
             storage = cur_dir.join(tmpdir);
