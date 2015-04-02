@@ -8,7 +8,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#![feature(convert, io)]
 #![doc(html_logo_url = "http://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
        html_favicon_url = "http://www.rust-lang.org/favicon.ico",
        html_root_url = "http://doc.rust-lang.org/tempdir/")]
@@ -74,8 +73,7 @@ impl TempDir {
         }
 
         Err(Error::new(ErrorKind::AlreadyExists,
-                       "too many temporary directories already exist",
-                       None))
+                       "too many temporary directories already exist"))
     }
 
     /// Attempts to make a temporary directory inside of `env::temp_dir()` whose
