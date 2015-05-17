@@ -8,13 +8,10 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#![feature(path_ext)]
-
 extern crate tempdir;
 
 use std::env;
 use std::fs;
-use std::io::prelude::*;
 use std::path::Path;
 use std::sync::mpsc::channel;
 use std::thread;
@@ -23,6 +20,18 @@ use tempdir::TempDir;
 
 macro_rules! t {
     ($e:expr) => (match $e { Ok(n) => n, Err(e) => panic!("error: {}", e) })
+}
+
+trait PathExt {
+    fn exists(&self) -> bool;
+    fn is_dir(&self) -> bool;
+}
+
+impl PathExt for Path {
+    fn exists(&self) -> bool { fs::metadata(self).is_ok() }
+    fn is_dir(&self) -> bool {
+        fs::metadata(self).map(|m| m.is_dir()).unwrap_or(false)
+    }
 }
 
 fn test_tempdir() {
