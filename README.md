@@ -6,7 +6,7 @@ contents when the directory is dropped.
 
 [![Build Status](https://travis-ci.org/rust-lang/tempdir.svg?branch=master)](https://travis-ci.org/rust-lang/tempdir)
 
-[Documentation](http://doc.rust-lang.org/tempdir)
+[Documentation](https://doc.rust-lang.org/tempdir)
 
 ## Usage
 
