@@ -42,8 +42,7 @@ impl TempDir {
     /// deleted once the returned wrapper is destroyed.
     ///
     /// If no directory can be created, `Err` is returned.
-    pub fn new_in<P: AsRef<Path>>(tmpdir: P, prefix: &str)
-                                  -> io::Result<TempDir> {
+    pub fn new_in<P: AsRef<Path>>(tmpdir: P, prefix: &str) -> io::Result<TempDir> {
         let storage;
         let mut tmpdir = tmpdir.as_ref();
         if !tmpdir.is_absolute() {
@@ -68,7 +67,7 @@ impl TempDir {
             match fs::create_dir(&path) {
                 Ok(_) => return Ok(TempDir { path: Some(path) }),
                 Err(ref e) if e.kind() == ErrorKind::AlreadyExists => {}
-                Err(e) => return Err(e)
+                Err(e) => return Err(e),
             }
         }
 
@@ -109,7 +108,7 @@ impl TempDir {
     fn cleanup_dir(&mut self) -> io::Result<()> {
         match self.path {
             Some(ref p) => fs::remove_dir_all(p),
-            None => Ok(())
+            None => Ok(()),
         }
     }
 }
