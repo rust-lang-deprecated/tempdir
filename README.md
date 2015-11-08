@@ -25,7 +25,7 @@ extern crate tempdir;
 
 ## Example
 
-The following sample method does the following:
+This sample method does the following:
 
 1. Create a temporary directory in the default location with the given prefix.
 2. Determine a file path in the directory and print it out.
