@@ -17,6 +17,7 @@ extern crate rand;
 
 use std::env;
 use std::io::{self, Error, ErrorKind};
+use std::fmt;
 use std::fs;
 use std::path::{self, PathBuf, Path};
 use rand::{thread_rng, Rng};
@@ -110,6 +111,14 @@ impl TempDir {
             Some(ref p) => fs::remove_dir_all(p),
             None => Ok(()),
         }
+    }
+}
+
+impl fmt::Debug for TempDir {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("TempDir")
+            .field("path", &self.path())
+            .finish()
     }
 }
 
