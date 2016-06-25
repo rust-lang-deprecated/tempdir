@@ -38,11 +38,31 @@ const NUM_RETRIES: u32 = 1 << 31;
 const NUM_RAND_CHARS: usize = 12;
 
 impl TempDir {
-    /// Attempts to make a temporary directory inside of `tmpdir` whose name
+    /// Creates a `TempDir` inside of `tmpdir` whose name
     /// will have the prefix `prefix`. The directory will be automatically
     /// deleted once the returned wrapper is destroyed.
     ///
-    /// If no directory can be created, `Err` is returned.
+    /// # Errors
+    ///
+    /// This function will return an error if no directory can be created.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use tempdir::TempDir;
+    /// use std::path::Path;
+    ///
+    /// let file_path = Path::new("/tmp");
+    /// let prefix = "my_prefix";
+    ///
+    /// let dir = TempDir::new_in(file_path, prefix).unwrap();
+    /// let path = dir.path();
+    ///
+    /// use std::fs;
+    /// assert!(fs::metadata(path).is_ok());
+    /// ```
     pub fn new_in<P: AsRef<Path>>(tmpdir: P, prefix: &str) -> io::Result<TempDir> {
         let storage;
         let mut tmpdir = tmpdir.as_ref();
@@ -76,11 +96,30 @@ impl TempDir {
                        "too many temporary directories already exist"))
     }
 
-    /// Attempts to make a temporary directory inside of `env::temp_dir()` whose
+    /// Creates a `TempDir` inside of `env::temp_dir()` whose
     /// name will have the prefix `prefix`. The directory will be automatically
     /// deleted once the returned wrapper is destroyed.
     ///
-    /// If no directory can be created, `Err` is returned.
+    /// # Errors
+    ///
+    /// This function will return an error if no directory can be created.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use tempdir::TempDir;
+    /// use std::path::Path;
+    ///
+    /// let prefix = "my_prefix";
+    ///
+    /// let dir = TempDir::new(prefix).unwrap();
+    /// let path: &Path = dir.path();
+    ///
+    /// use std::fs;
+    /// assert!(fs::metadata(path).is_ok());
+    /// ```
     pub fn new(prefix: &str) -> io::Result<TempDir> {
         TempDir::new_in(&env::temp_dir(), prefix)
     }
@@ -88,11 +127,45 @@ impl TempDir {
     /// Unwrap the wrapped `std::path::Path` from the `TempDir` wrapper.
     /// This discards the wrapper so that the automatic deletion of the
     /// temporary directory is prevented.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use tempdir::TempDir;
+    /// use std::path::{self, PathBuf, Path};
+    ///
+    /// let prefix = "my_prefix";
+    /// let dir = TempDir::new(prefix).unwrap();
+    ///
+    /// let path: PathBuf = dir.into_path();
+    ///
+    /// use std::fs;
+    /// assert!(fs::metadata(path).is_ok());
+    /// ```
     pub fn into_path(mut self) -> PathBuf {
         self.path.take().unwrap()
     }
 
     /// Access the wrapped `std::path::Path` to the temporary directory.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use tempdir::TempDir;
+    /// use std::path::Path;
+    ///
+    /// let prefix = "my_prefix";
+    /// let dir = TempDir::new(prefix).unwrap();
+    ///
+    /// let path: &Path = dir.path();
+    ///
+    /// use std::fs;
+    /// assert!(fs::metadata(path).is_ok());
+    /// ```
     pub fn path(&self) -> &path::Path {
         self.path.as_ref().unwrap()
     }
@@ -102,6 +175,40 @@ impl TempDir {
     /// Although `TempDir` removes the directory on drop, in the destructor
     /// any errors are ignored. To detect errors cleaning up the temporary
     /// directory, call `close` instead.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use tempdir::TempDir;
+    ///
+    /// let prefix = "my_prefix";
+    /// let dir = TempDir::new(prefix).unwrap();
+    /// let res = dir.close();
+    ///
+    /// assert!(res.is_ok());
+    /// ```
+    ///
+    /// When the directory cannot be deleted for some reason
+    ///
+    /// ```
+    /// use tempdir::TempDir;
+    /// use std::fs;
+    ///
+    /// let prefix = "my_prefix";
+    /// let dir = TempDir::new(prefix).unwrap();
+    ///
+    /// {
+    ///     let path = dir.path();
+    ///     fs::remove_dir(path);
+    /// }
+    ///
+    /// let res = dir.close();
+    ///
+    /// assert!(res.is_err());
+    ///
+    /// ```
     pub fn close(mut self) -> io::Result<()> {
         self.cleanup_dir()
     }
