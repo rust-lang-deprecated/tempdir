@@ -17,8 +17,8 @@
 //!
 //! The [`TempDir`] type creates a directory on the file system that
 //! is deleted once it goes out of scope. At construction, the
-//! `TempDir` creates a new directory with a randomly generated name,
-//! and with a prefix of your choosing.
+//! `TempDir` creates a new directory with a randomly generated name
+//! and a prefix of your choosing.
 //!
 //! [`TempDir`]: struct.TempDir.html
 //! [`std::env::temp_dir()`]: https://doc.rust-lang.org/std/env/fn.temp_dir.html
@@ -34,13 +34,13 @@
 //!
 //! fn main() {
 //!     // Create a directory inside of `std::env::temp_dir()`, named with
-//!     // the prefix, "example".
+//!     // the prefix "example".
 //!     let tmp_dir = TempDir::new("example").expect("create temp dir");
 //!     let file_path = tmp_dir.path().join("my-temporary-note.txt");
 //!     let mut tmp_file = File::create(file_path).expect("create temp file");
 //!     writeln!(tmp_file, "Brian was here. Briefly.").expect("write temp file");
 //!
-//!     // By closing the `TempDir` explicitly we can check that it has
+//!     // By closing the `TempDir` explicitly, we can check that it has
 //!     // been deleted successfully. If we don't close it explicitly,
 //!     // the directory will still be deleted when `tmp_dir` goes out
 //!     // of scope, but we won't know whether deleting the directory
@@ -68,12 +68,12 @@ use rand::{thread_rng, Rng};
 /// and with a prefix of your choosing.
 ///
 /// The default constructor, [`TempDir::new`], creates directories in
-/// the location returned by [`std::env::temp_dir()`], but they can be
-/// configured to manage the lifetime of a temporary directory in any
-/// location by constructing with [`TempDir::new_in`].
+/// the location returned by [`std::env::temp_dir()`], but `TempDir`
+/// can be configured to manage a temporary directory in any location
+/// by constructing with [`TempDir::new_in`].
 ///
 /// After creating a `TempDir`, work with the file system by doing
-/// standard [`std::fs`] file system operations on it's [`Path`],
+/// standard [`std::fs`] file system operations on its [`Path`],
 /// which can be retrieved with [`TempDir::path`]. Once the `TempDir`
 /// value is dropped, the directory at the path will be deleted, along
 /// with any files and directories it contains. It is your responsibility
@@ -122,6 +122,8 @@ impl TempDir {
     /// everything inside it will be automatically deleted once the
     /// returned `TempDir` is destroyed.
     ///
+    /// # Errors
+    ///
     /// If the directory can not be created, `Err` is returned.
     ///
     /// # Examples
@@ -137,6 +139,9 @@ impl TempDir {
     /// let file_path = tmp_dir.path().join("my-temporary-note.txt");
     /// let mut tmp_file = File::create(file_path).expect("create temp file");
     /// writeln!(tmp_file, "Brian was here. Briefly.").expect("write temp file");
+    ///
+    /// // `tmp_dir` goes out of scope, the directory as well as
+    /// // `tmp_file` will be deleted here.
     /// ```
     pub fn new(prefix: &str) -> io::Result<TempDir> {
         TempDir::new_in(&env::temp_dir(), prefix)
@@ -146,6 +151,8 @@ impl TempDir {
     /// whose name will have the prefix `prefix`. The directory and
     /// everything inside it will be automatically deleted once the
     /// returned `TempDir` is destroyed.
+    ///
+    /// # Errors
     ///
     /// If the directory can not be created, `Err` is returned.
     ///
@@ -205,10 +212,20 @@ impl TempDir {
     /// ```
     /// use tempdir::TempDir;
     ///
-    /// let tmp_dir = TempDir::new("example").expect("create temp dir");
+    /// let tmp_path;
     ///
-    /// // Check that the temp directory actually exists.
-    /// assert!(tmp_dir.path().exists());
+    /// {
+    ///    let tmp_dir = TempDir::new("example").expect("create temp dir");
+    ///    tmp_path = tmp_dir.path().to_owned();
+    ///
+    ///    // Check that the temp directory actually exists.
+    ///    assert!(tmp_path.exists());
+    ///
+    ///    // End of `tmp_dir` scope, directory will be deleted
+    /// }
+    ///
+    /// // Temp directory should be deleted by now
+    /// assert_eq!(tmp_path.exists(), false);
     /// ```
     pub fn path(&self) -> &path::Path {
         self.path.as_ref().unwrap()
@@ -244,6 +261,15 @@ impl TempDir {
     /// Although `TempDir` removes the directory on drop, in the destructor
     /// any errors are ignored. To detect errors cleaning up the temporary
     /// directory, call `close` instead.
+    ///
+    /// # Errors
+    ///
+    /// This function may return a variety of [`std::io::Error`]s that result from deleting
+    /// the files and directories contained with the temporary directory,
+    /// as well as from deleting the temporary directory itself. These errors
+    /// may be platform specific.
+    ///
+    /// [`std::io::Error`]: http://doc.rust-lang.org/std/io/struct.Error.html
     ///
     /// # Examples
     ///
