@@ -205,6 +205,16 @@ fn in_tmpdir<F>(f: F) where F: FnOnce() {
     f();
 }
 
+pub fn pass_as_asref_path() {
+    let tempdir = t!(TempDir::new("test"));
+    takes_asref_path(&tempdir);
+
+    fn takes_asref_path<T: AsRef<Path>>(path: T) {
+        let path = path.as_ref();
+        assert!(path.exists());
+    }
+}
+
 #[test]
 fn main() {
     in_tmpdir(test_tempdir);
@@ -215,4 +225,5 @@ fn main() {
     in_tmpdir(recursive_mkdir_rel_2);
     in_tmpdir(test_remove_dir_all_ok);
     in_tmpdir(dont_double_panic);
+    in_tmpdir(pass_as_asref_path);
 }
