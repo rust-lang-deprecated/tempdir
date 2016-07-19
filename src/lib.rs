@@ -305,6 +305,12 @@ impl TempDir {
     }
 }
 
+impl AsRef<Path> for TempDir {
+    fn as_ref(&self) -> &Path {
+        self.path()
+    }
+}
+
 impl fmt::Debug for TempDir {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("TempDir")
