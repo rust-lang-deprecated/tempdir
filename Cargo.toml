@@ -12,6 +12,7 @@ description = """
 A library for managing a temporary directory and deleting all contents when it's
 dropped.
 """
+categories = ["filesystem"]
 
 [dependencies]
 rand = "0.3"
