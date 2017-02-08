@@ -321,7 +321,13 @@ impl fmt::Debug for TempDir {
 
 impl Drop for TempDir {
     fn drop(&mut self) {
-        let _ = self.cleanup_dir();
+        match self.cleanup_dir() {
+            Ok(_) => (),
+            Err(e) => match e.kind() {
+                ErrorKind::NotFound => (),
+                _ => panic!(e),
+            }
+        }
     }
 }
 
