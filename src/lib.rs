@@ -294,14 +294,12 @@ impl TempDir {
     /// tmp_dir.close().expect("delete temp dir");
     /// ```
     pub fn close(mut self) -> io::Result<()> {
-        self.cleanup_dir()
-    }
+        let result = fs::remove_dir_all(self.path());
 
-    fn cleanup_dir(&mut self) -> io::Result<()> {
-        match self.path {
-            Some(ref p) => fs::remove_dir_all(p),
-            None => Ok(()),
-        }
+        // Prevent the Drop impl from removing the dir a second time.
+        self.path = None;
+
+        result
     }
 }
 
@@ -321,7 +319,10 @@ impl fmt::Debug for TempDir {
 
 impl Drop for TempDir {
     fn drop(&mut self) {
-        let _ = self.cleanup_dir();
+        // Path is `None` if `close()` or `into_path()` has been called.
+        if let Some(ref p) = self.path {
+            let _ =  fs::remove_dir_all(p);
+        }
     }
 }
 
