@@ -39,10 +39,10 @@ fn write_temp_folder_with_files() -> Result<(), io::Error> {
         let file_path = dir.path().join("foo.txt");
         println!("{:?}", file_path);
 
-        let mut f = try!(File::create(file_path));
-        try!(f.write_all(b"Hello, world!"));
-        try!(f.sync_all());
-        try!(dir.close());
+        let mut f = File::create(file_path)?;
+        f.write_all(b"Hello, world!")?;
+        f.sync_all()?;
+        dir.close()?;
     }
     Ok(())
 }
