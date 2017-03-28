@@ -10,7 +10,7 @@
 
 #![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
        html_favicon_url = "https://www.rust-lang.org/favicon.ico",
-       html_root_url = "https://doc.rust-lang.org/tempdir/")]
+       html_root_url = "https://docs.rs/tempdir/0.3.5")]
 #![cfg_attr(test, deny(warnings))]
 
 //! Temporary directories of files.
