@@ -14,6 +14,7 @@ A library for managing a temporary directory and deleting all contents when it's
 dropped.
 """
 categories = ["filesystem"]
+keywords = ["fs", "file", "filesystem"]
 
 [dependencies]
 rand = "0.3"
