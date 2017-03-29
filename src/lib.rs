@@ -58,6 +58,7 @@
 //! ```
 
 extern crate rand;
+extern crate remove_dir_all;
 
 use std::env;
 use std::io::{self, Error, ErrorKind};
@@ -65,6 +66,7 @@ use std::fmt;
 use std::fs;
 use std::path::{self, PathBuf, Path};
 use rand::{thread_rng, Rng};
+use remove_dir_all::remove_dir_all;
 
 /// A directory in the filesystem that is automatically deleted when
 /// it goes out of scope.
@@ -321,7 +323,7 @@ impl TempDir {
     /// # }
     /// ```
     pub fn close(mut self) -> io::Result<()> {
-        let result = fs::remove_dir_all(self.path());
+        let result = remove_dir_all(self.path());
 
         // Prevent the Drop impl from removing the dir a second time.
         self.path = None;
@@ -348,7 +350,7 @@ impl Drop for TempDir {
     fn drop(&mut self) {
         // Path is `None` if `close()` or `into_path()` has been called.
         if let Some(ref p) = self.path {
-            let _ =  fs::remove_dir_all(p);
+            let _ =  remove_dir_all(p);
         }
     }
 }
