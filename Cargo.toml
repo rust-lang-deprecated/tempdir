@@ -16,5 +16,9 @@ dropped.
 categories = ["filesystem"]
 keywords = ["fs", "file", "filesystem"]
 
+[badges]
+travis-ci = { repository = "rust-lang-nursery/tempdir" }
+appveyor = { repository = "rust-lang-libs/tempdir" }
+
 [dependencies]
 rand = "0.3"
