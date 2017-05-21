@@ -191,7 +191,7 @@ impl TempDir {
         let storage;
         let mut tmpdir = tmpdir.as_ref();
         if !tmpdir.is_absolute() {
-            let cur_dir = try!(env::current_dir());
+            let cur_dir = env::current_dir()?;
             storage = cur_dir.join(tmpdir);
             tmpdir = &storage;
             // return TempDir::new_in(&cur_dir.join(tmpdir), prefix);
@@ -200,7 +200,7 @@ impl TempDir {
         let mut rng = thread_rng();
         for _ in 0..NUM_RETRIES {
             let suffix: String = rng.gen_ascii_chars().take(NUM_RAND_CHARS).collect();
-            let leaf = if prefix.len() > 0 {
+            let leaf = if !prefix.is_empty() {
                 format!("{}.{}", prefix, suffix)
             } else {
                 // If we're given an empty string for a prefix, then creating a
