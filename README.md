@@ -35,6 +35,10 @@ This sample method does the following:
 5. Close the directory, deleting the contents in the process.
 
 ```rust
+use std::io::{self, Write};
+use std::fs::File;
+use tempdir::TempDir;
+
 fn write_temp_folder_with_files() -> Result<(), io::Error> {
     let dir = TempDir::new("my_directory_prefix")?;
     let file_path = dir.path().join("foo.txt");
