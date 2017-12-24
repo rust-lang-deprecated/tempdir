@@ -36,15 +36,15 @@ This sample method does the following:
 
 ```rust
 fn write_temp_folder_with_files() -> Result<(), io::Error> {
-    if let Ok(dir) = TempDir::new("my_directory_prefix") {
-        let file_path = dir.path().join("foo.txt");
-        println!("{:?}", file_path);
+    let dir = TempDir::new("my_directory_prefix")?;
+    let file_path = dir.path().join("foo.txt");
+    println!("{:?}", file_path);
 
-        let mut f = File::create(file_path)?;
-        f.write_all(b"Hello, world!")?;
-        f.sync_all()?;
-        dir.close()?;
-    }
+    let mut f = File::create(file_path)?;
+    f.write_all(b"Hello, world!")?;
+    f.sync_all()?;
+    dir.close()?;
+
     Ok(())
 }
 ```
