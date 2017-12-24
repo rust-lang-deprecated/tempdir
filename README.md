@@ -39,7 +39,7 @@ use std::io::{self, Write};
 use std::fs::File;
 use tempdir::TempDir;
 
-fn write_temp_folder_with_files() -> Result<(), io::Error> {
+fn write_temp_folder_with_files() -> io::Result<()> {
     let dir = TempDir::new("my_directory_prefix")?;
     let file_path = dir.path().join("foo.txt");
     println!("{:?}", file_path);
