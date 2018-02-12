@@ -1,13 +1,17 @@
 tempdir
 =======
 
-A Rust library for creating a temporary directory and deleting its entire
-contents when the directory is dropped.
-
 [![Build Status](https://travis-ci.org/rust-lang-nursery/tempdir.svg?branch=master)](https://travis-ci.org/rust-lang-nursery/tempdir)
 [![Build status](https://ci.appveyor.com/api/projects/status/2mp24396db5t4hul/branch/master?svg=true)](https://ci.appveyor.com/project/rust-lang-libs/tempdir/branch/master)
 
 [Documentation](https://doc.rust-lang.org/tempdir)
+
+## Deprecation Note
+
+The `tempdir` crate is being merged into [`tempfile`](https://github.com/Stebalien/tempfile). Please see [this issue](https://github.com/Stebalien/tempfile/issues/43) to track progress and direct new issues and pull requests to `tempfile`.
+
+A Rust library for creating a temporary directory and deleting its entire
+contents when the directory is dropped.
 
 ## Usage
 
