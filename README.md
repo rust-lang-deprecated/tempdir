@@ -11,7 +11,7 @@ contents when the directory is dropped.
 
 ## Deprecation Note
 
-The `tempdir` crate is being merged into [`tempfile`](https://github.com/Stebalien/tempfile). Please see [this issue](https://github.com/Stebalien/tempfile/issues/43) to track progress and direct new issues and pull requests to `tempfile`.
+The `tempdir` crate is being merged into [`tempfile`](https://github.com/Stebalien/tempfile) and is available in `3.x`. Please direct new issues and pull requests to `tempfile`.
 
 ## Usage
 
