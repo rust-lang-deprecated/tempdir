@@ -66,6 +66,7 @@ use std::fmt;
 use std::fs;
 use std::path::{self, PathBuf, Path};
 use rand::{thread_rng, Rng};
+use rand::distributions::Alphanumeric;
 use remove_dir_all::remove_dir_all;
 
 /// A directory in the filesystem that is automatically deleted when
@@ -199,7 +200,10 @@ impl TempDir {
 
         let mut rng = thread_rng();
         for _ in 0..NUM_RETRIES {
-            let suffix: String = rng.gen_ascii_chars().take(NUM_RAND_CHARS).collect();
+            let suffix: String = ::std::iter::repeat(())
+                .map(|()| rng.sample(Alphanumeric))
+                .take(NUM_RAND_CHARS)
+                .collect();
             let leaf = if !prefix.is_empty() {
                 format!("{}.{}", prefix, suffix)
             } else {
